@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.util.List;
-import model.Artist;
 
 public class JsonConverter<T> {
     
@@ -19,9 +18,10 @@ public class JsonConverter<T> {
     public String convertToJson(List<T> objects) {
         
         JsonArray jarray = gson.toJsonTree(objects).getAsJsonArray();
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.add("objs", jarray);
+        //JsonObject jsonObject = new JsonObject();
+        //jsonObject.add("objs", jarray);
 
-        return jsonObject.toString();
+        //return jsonObject.toString();
+        return jarray.toString();
     }
 }

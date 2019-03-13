@@ -15,12 +15,13 @@ function loadGenres() {
             
             //convert json to list elements
             var genreArray = JSON.parse(this.response).objs;
-            genreArray.forEach(function (element, index, array) {
-               var li = document.createElement('li');
-               li.innerHTML = element.name;
-               li.onclick = loadArtistByGenre;
-               ul.appendChild(li);
-            });
+            console.log(genreArray);
+            //genreArray.forEach(function (element, index, array) {
+              // var li = document.createElement('li');
+              // li.innerHTML = element.name;
+              // li.onclick = loadArtistByGenre;
+              // ul.appendChild(li);
+            //});
         }
     };
     xhttp.open("GET", "GenreServlet", true);
