@@ -18,7 +18,7 @@
             Your browser doesn't support audio tag...
         </audio>
         
-        <div id="dataContent">loading...</div>
+        <div id="dataContainer">loading...</div>
         
         <form action="LoginServlet" method="post">
             <input type="hidden" name="action" value="logout">
