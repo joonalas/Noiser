@@ -22,7 +22,7 @@ public class ArtistDao extends DaoBase<Artist>{
         return instance;
     }
     
-    public List<Artist> getByGenre(String genre) {
+    public List<Artist> getByGenre(int genre) {
         EntityManager em = DbUtil.getEntityManager("NoiserPU");
         List<Artist> artists = null;
         try {

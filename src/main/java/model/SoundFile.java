@@ -1,5 +1,6 @@
 package model;
 
+import com.google.gson.annotations.Expose;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,22 +23,30 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "SoundFile.findBySize", query = "SELECT s FROM SoundFile s WHERE s.size = :size")
     , @NamedQuery(name = "SoundFile.findByFormat", query = "SELECT s FROM SoundFile s WHERE s.format = :format")
     , @NamedQuery(name = "SoundFile.findByLastModified", query = "SELECT s FROM SoundFile s WHERE s.lastModified = :lastModified")
-    , @NamedQuery(name = "SoundFile.findByCreated", query = "SELECT s FROM SoundFile s WHERE s.created = :created")})
+    , @NamedQuery(name = "SoundFile.findByCreated", query = "SELECT s FROM SoundFile s WHERE s.created = :created")
+    , @NamedQuery(name = "SoundFile.findBySong", query = "SELECT s FROM SoundFile s WHERE s.songId.id = :song")   
+})
 public class SoundFile implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "id")
+    @Expose
     private Integer id;
     @Column(name = "path")
+    @Expose
     private String path;
     @Column(name = "size")
+    @Expose
     private Integer size;
     @Column(name = "format")
+    @Expose
     private String format;
     @Column(name = "lastModified")
+    @Expose
     private Integer lastModified;
     @Column(name = "created")
+    @Expose
     private Integer created;
     @JoinColumn(name = "song_id", referencedColumnName = "id")
     @ManyToOne

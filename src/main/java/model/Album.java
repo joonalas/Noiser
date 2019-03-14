@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Album.findByName", query = "SELECT a FROM Album a WHERE a.name = :name")
     , @NamedQuery(name = "Album.findByYear", query = "SELECT a FROM Album a WHERE a.year = :year")
     , @NamedQuery(name = "Album.findByCoverPath", query = "SELECT a FROM Album a WHERE a.coverPath = :coverPath")
-    , @NamedQuery(name = "Album.findByArtistName", query = "SELECT a FROM Album a WHERE a.artistId.name = :artistName")
+    , @NamedQuery(name = "Album.findByArtist", query = "SELECT a FROM Album a WHERE a.artistId.id = :artist")
 })
 public class Album implements Serializable {
 

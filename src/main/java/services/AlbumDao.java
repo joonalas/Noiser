@@ -24,12 +24,12 @@ public class AlbumDao extends DaoBase<Album>{
     }
     
     
-    public List<Album> getByArtistName(String artistName) {
+    public List<Album> getByArtistName(int artist) {
         EntityManager em = DbUtil.getEntityManager("NoiserPU");
         List<Album> albums = null;
         try {
-            TypedQuery<Album> query = em.createNamedQuery("Album.findByArtistName", Album.class);
-            query.setParameter("artistName", artistName);
+            TypedQuery<Album> query = em.createNamedQuery("Album.findByArtist", Album.class);
+            query.setParameter("artist", artist);
             albums = query.getResultList();
         } catch(Exception e) {
             System.err.println(e.getMessage() + ":\n");

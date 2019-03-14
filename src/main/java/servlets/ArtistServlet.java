@@ -44,7 +44,7 @@ public class ArtistServlet extends HttpServlet {
         
         String genre = request.getParameter("genre");
         if(genre != null) {
-            artists = dao.getByGenre(genre);
+            artists = dao.getByGenre(Integer.parseInt(genre));
         } else {
             artists = dao.getAll();
         }

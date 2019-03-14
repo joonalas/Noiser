@@ -10,13 +10,14 @@
         <link rel="stylesheet" type="text/css" href="CSS/main.css">
     </head>
     <body>
-        <audio controls>
-            <!--<c:forEach var="soundfile" items="${soundfiles}">
-                <source src='<c:out value="${soundfile.path}"/>' type="audio/<c:out value="${soundfile.format}"/>"/>
-            </c:forEach>-->
-            <source src='sounds/DSBM.mp3' type="audio/mpeg">
-            Your browser doesn't support audio tag...
-        </audio>
+        <audio id="audioplayer" controls></audio><br/>
+        
+        <div>
+            <button class="musicNavigation" id="genreNav">Genres</button>
+            <button class="musicNavigation" id="artistNav">Artists</button>
+            <button class="musicNavigation" id="albumNav">Albums</button>
+            <button class="musicNavigation" id="songNav">Songs</button>
+        </div>
         
         <div id="dataContainer">loading...</div>
         

@@ -1,4 +1,4 @@
-//browse stack includes viewed data items by name
+//browse stack includes viewed data items by database id
 //this helps going back when browsing music
 class Stack {
     constructor() {
@@ -12,6 +12,11 @@ class Stack {
            this.items.pop();
         }
     }
+    popAll() {
+        while(this.items.length > 0) {
+            this.items.pop();
+        }
+    }
     peek() {
         if(this.items.length > 0) {
             return this.items[this.items.length - 1];
@@ -22,6 +27,8 @@ class Stack {
     }
 }
 var browseStack = new Stack();
+
+//----------------------XML HTTP Stuff----------------------------------------
 
 //run callback after processing response, mainly good for creating back buttons
 function requestAndView(reqURL, onclickFunc, callback) {
@@ -40,11 +47,11 @@ function requestAndView(reqURL, onclickFunc, callback) {
             dataContainer.appendChild(ul);
             
             //convert json to list elements
-            console.log(this.response);
             var objsArray = JSON.parse(this.response);
             objsArray.forEach(function (element, index, array) {
                 var li = document.createElement('li');
                 li.innerHTML = element.name;
+                li.setAttribute("data-dbId", element.id);
 
                 //if onclick function was given, set it
                 if (onclickFunc !== null) {
@@ -53,21 +60,61 @@ function requestAndView(reqURL, onclickFunc, callback) {
 
                 ul.appendChild(li);
             });
-            callback();
+            //invoke callback if there's any
+            if(callback !== null) {
+                callback();
+            }
         }
     };
     xhttp.open("GET", reqURL, true);
     xhttp.send();
 }
 
+function requestAndPlay(reqURL, callback) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if(this.readyState === 4 && this.status === 200) {
+            var audioplayer = document.getElementById("audioplayer");
+            audioplayer.pause();
+            audioplayer.currentTime = 0;
+            while(audioplayer.firstChild) {
+                audioplayer.removeChild(audioplayer.firstChild);
+            }
+            
+            var fileArray = JSON.parse(this.response);
+            fileArray.forEach(function(file) {
+                var source = document.createElement("SOURCE");
+                source.src = file.path;
+                console.log(source.src);
+                source.type = "audio/" + file.format;
+                console.log(source.type);
+                audioplayer.appendChild(source);
+            });
+            
+            audioplayer.load();
+            audioplayer.play();
+            
+            //invoke callback if there's any
+            if(callback !== null) {
+                callback();
+            }
+        }
+    };
+    xhttp.open("GET", reqURL, true);
+    xhttp.send();
+}
+
+//-------------------------------------------------------------------
+
+
 //-------------------LOAD FUNCTIONS----------------------------------
 
 function loadGenres() {
     var reqURL = "GenreServlet";
     requestAndView(reqURL, function() {
-        browseStack.push(this.innerHTML);
+        browseStack.push(this.getAttribute("data-dbId"));
         loadArtistByGenre();
-    }, function() {});
+    }, null);
 }
 
 function loadArtistByGenre(){
@@ -75,7 +122,7 @@ function loadArtistByGenre(){
     requestAndView(reqURL, 
     //onclick function for list elements
     function() {
-        browseStack.push(this.innerHTML);
+        browseStack.push(this.getAttribute("data-dbId"));
         loadAlbumByArtist();
     }, 
     //callback for creating back button
@@ -87,7 +134,7 @@ function loadArtistByGenre(){
 function loadAlbumByArtist() {
     var reqURL = "AlbumServlet?artist=" + browseStack.peek();
     requestAndView(reqURL, function() {
-        browseStack.push(this.innerHTML);
+        browseStack.push(this.getAttribute("data-dbId"));
         loadSongByAlbum();
     }, function() {
         //stack size of 1 means that the next item is the root of the browse
@@ -99,7 +146,12 @@ function loadAlbumByArtist() {
 
 function loadSongByAlbum() {
     var reqURL = "SongServlet?album=" + browseStack.peek();
-    requestAndView(reqURL, null, 
+    requestAndView(reqURL,
+    //when clicked, play the song
+    function() {
+        var reqURL = "SoundFileServlet?song=" + this.getAttribute("data-dbId");
+        requestAndPlay(reqURL, null);
+    }, 
     //callback for creating back button
     function() {
         if(browseStack.getStackSize() > 1) {
@@ -111,22 +163,27 @@ function loadSongByAlbum() {
 function loadArtists() {
     var reqURL = "ArtistServlet";
     requestAndView(reqURL, function() {
-        browseStack.push(this.innerHTML);
+        browseStack.push(this.getAttribute("data-dbId"));
         loadAlbumByArtist();
-    }, function() {});
+    }, null);
 }
 
 function loadAlbums() {
     var reqURL = "AlbumServlet";
     requestAndView(reqURL, function() {
-        browseStack.push(this.innerHTML);
+        browseStack.push(this.getAttribute("data-dbId"));
         loadSongByAlbum();
-    }, function() {});
+    }, null);
 }
 
 function loadSongs() {
     var reqURL = "SongServlet";
-    requestAndView(reqURL, null, function() {});
+    requestAndView(reqURL,
+    //when clicked, play the song
+    function() {
+        var reqURL = "SoundFileServlet?song=" + this.getAttribute("data-dbId");
+        requestAndPlay(reqURL, null);
+    }, null);
 }
 
 //----------------------------------------------------------------
@@ -142,4 +199,22 @@ function createBackButton(loadFunc) {
 }
 
 
-document.body.onload = loadGenres();
+document.body.onload = function() {
+    document.getElementById("genreNav").onclick = function() {
+        browseStack.popAll();
+        loadGenres();
+    };
+    document.getElementById("artistNav").onclick = function() {
+        browseStack.popAll();
+        loadArtists();
+    };
+    document.getElementById("albumNav").onclick = function() {
+        browseStack.popAll();
+        loadAlbums();
+    };
+    document.getElementById("songNav").onclick = function() {
+        browseStack.popAll();
+        loadSongs();
+    };
+    loadGenres();
+};

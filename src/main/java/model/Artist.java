@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Artist.findById", query = "SELECT a FROM Artist a WHERE a.id = :id")
     , @NamedQuery(name = "Artist.findByName", query = "SELECT a FROM Artist a WHERE a.name = :name")
     , @NamedQuery(name = "Artist.findByImagePath", query = "SELECT a FROM Artist a WHERE a.imagePath = :imagePath")
-    , @NamedQuery(name = "Artist.findByGenre", query = "SELECT a FROM Artist a JOIN a.genreCollection g WHERE g.name = :genre")
+    , @NamedQuery(name = "Artist.findByGenre", query = "SELECT a FROM Artist a JOIN a.genreCollection g WHERE g.id = :genre")
 })
 public class Artist implements Serializable {
     //Fields without expose annotation are exluded from json

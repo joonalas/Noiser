@@ -45,7 +45,7 @@ public class SongServlet extends HttpServlet {
         
         String album = request.getParameter("album");
         if(album != null) {
-            songs = dao.getByAlbumName(album);
+            songs = dao.getByAlbumName(Integer.parseInt(album));
         } else {
             songs = dao.getAll();
         }
