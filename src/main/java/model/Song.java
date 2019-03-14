@@ -1,5 +1,6 @@
 package model;
 
+import com.google.gson.annotations.Expose;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Column;
@@ -23,18 +24,24 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Song.findById", query = "SELECT s FROM Song s WHERE s.id = :id")
     , @NamedQuery(name = "Song.findByName", query = "SELECT s FROM Song s WHERE s.name = :name")
     , @NamedQuery(name = "Song.findByDuration", query = "SELECT s FROM Song s WHERE s.duration = :duration")
-    , @NamedQuery(name = "Song.findByTrack", query = "SELECT s FROM Song s WHERE s.track = :track")})
+    , @NamedQuery(name = "Song.findByTrack", query = "SELECT s FROM Song s WHERE s.track = :track")
+    , @NamedQuery(name = "Song.findByAlbumName", query = "SELECT s FROM Song s WHERE s.albumId.name = :albumName")
+})
 public class Song implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "id")
+    @Expose
     private Integer id;
     @Column(name = "name")
+    @Expose
     private String name;
     @Column(name = "duration")
+    @Expose
     private Integer duration;
     @Column(name = "track")
+    @Expose
     private Integer track;
     @JoinColumn(name = "album_id", referencedColumnName = "id")
     @ManyToOne

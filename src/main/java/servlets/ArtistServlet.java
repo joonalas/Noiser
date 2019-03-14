@@ -45,9 +45,11 @@ public class ArtistServlet extends HttpServlet {
         String genre = request.getParameter("genre");
         if(genre != null) {
             artists = dao.getByGenre(genre);
-            String output = converter.convertToJson(artists);
-            out.print(output);
+        } else {
+            artists = dao.getAll();
         }
+        String output = converter.convertToJson(artists);
+        out.print(output);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

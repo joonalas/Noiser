@@ -45,10 +45,12 @@ public class AlbumServlet extends HttpServlet {
         
         String artist = request.getParameter("artist");
         if(artist != null) {
-            albums = dao.getByArtistName(artist);
-            String output = converter.convertToJson(albums);
-            out.print(output);
+            albums = dao.getByArtistName(artist);  
+        } else {
+            albums = dao.getAll();
         }
+        String output = converter.convertToJson(albums);
+        out.print(output);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -60,10 +60,13 @@ function requestAndView(reqURL, onclickFunc, callback) {
     xhttp.send();
 }
 
+//-------------------LOAD FUNCTIONS----------------------------------
+
 function loadGenres() {
     var reqURL = "GenreServlet";
     requestAndView(reqURL, function() {
-        browse(loadArtistByGenre);
+        browseStack.push(this.innerHTML);
+        loadArtistByGenre();
     }, function() {});
 }
 
@@ -72,29 +75,61 @@ function loadArtistByGenre(){
     requestAndView(reqURL, 
     //onclick function for list elements
     function() {
-        browse(loadAlbumByArtist);
+        browseStack.push(this.innerHTML);
+        loadAlbumByArtist();
     }, 
     //callback for creating back button
     function() {
-        if(browseStack.getStackSize() > 1) {
-            createBackButton(loadGenres);
-        } else { createBackButton(loadArtists); }
+        createBackButton(loadGenres);
     });
 }
 
 function loadAlbumByArtist() {
     var reqURL = "AlbumServlet?artist=" + browseStack.peek();
-    requestAndView(reqURL, null, function() {
-        createBackButton(loadArtistByGenre);
+    requestAndView(reqURL, function() {
+        browseStack.push(this.innerHTML);
+        loadSongByAlbum();
+    }, function() {
+        //stack size of 1 means that the next item is the root of the browse
+        if(browseStack.getStackSize() > 1) {
+            createBackButton(loadArtistByGenre);
+        } else { createBackButton(loadArtists); }
+    });
+}
+
+function loadSongByAlbum() {
+    var reqURL = "SongServlet?album=" + browseStack.peek();
+    requestAndView(reqURL, null, 
+    //callback for creating back button
+    function() {
+        if(browseStack.getStackSize() > 1) {
+            createBackButton(loadAlbumByArtist);
+        } else { createBackButton(loadAlbums); }
     });
 }
 
 function loadArtists() {
     var reqURL = "ArtistServlet";
     requestAndView(reqURL, function() {
-        browse(loadAlbumByArtist);
-    });
+        browseStack.push(this.innerHTML);
+        loadAlbumByArtist();
+    }, function() {});
 }
+
+function loadAlbums() {
+    var reqURL = "AlbumServlet";
+    requestAndView(reqURL, function() {
+        browseStack.push(this.innerHTML);
+        loadSongByAlbum();
+    }, function() {});
+}
+
+function loadSongs() {
+    var reqURL = "SongServlet";
+    requestAndView(reqURL, null, function() {});
+}
+
+//----------------------------------------------------------------
 
 function createBackButton(loadFunc) {
     var btn = document.createElement("BUTTON");
@@ -102,13 +137,9 @@ function createBackButton(loadFunc) {
         browseStack.pop();
         loadFunc();
     };
-    btn.appendChild(document.createTextNode("Back to Genres"));
+    btn.appendChild(document.createTextNode("<"));
     document.getElementById("dataContainer").appendChild(btn);
 }
 
-function browse(loadFunc) {
-    browseStack.push(this.innerHTML);
-    loadFunc();
-}
 
 document.body.onload = loadGenres();
